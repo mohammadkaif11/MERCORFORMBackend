@@ -11,7 +11,6 @@ const JWT_SECRET = "gfg_jwt_secret_key";
 router.post("/login", async (req, res) => {
   try {
     const profile = JSON.parse(req.body.profile);
-    console.log("profile: ", profile);
     const user = await Users.findOne({ UserId: profile.id });
     if (user) {
       user.picture = profile.picture;

@@ -29,10 +29,7 @@ router.put("/updateformsetting", VerfifyFetchUserService, updateFormSetting);
 router.put("/updateformstatus", VerfifyFetchUserService, updateFormStatus);
 router.delete("/deleteform/:formid", VerfifyFetchUserService, deleteForm);
 router.get("/getformlink/:formid", VerfifyFetchUserService, getFormLink);
-router.post(
-  "/getform/:responseId",
-  getFormForResponse
-);
+router.post("/getform/:responseId", getFormForResponse);
 router.post(
   "/addformresponse/:responseId",
   VerfifyFetchUserService,
@@ -51,7 +48,6 @@ router.post(
 async function createForm(req, res) {
   try {
     let userId = req.userId;
-    console.log("req body: ", req.body);
     let form = await FormService.AddFormData(req.body, userId);
     res.status(200).send({ data: form, Msg: "Successfully created form" });
   } catch (error) {
@@ -75,7 +71,6 @@ async function updateForm(req, res) {
 //Get  Form by Id
 async function getFormByIdForm(req, res) {
   try {
-    let userId = req.userId;
     var formId = req.params.formid;
     let form = await FormService.GetformDataByformId(formId);
 
@@ -97,11 +92,9 @@ async function getRecentForm(req, res) {
   try {
     let userId = req.userId;
     let forms = await FormService.GetUserRecentsFormData(userId);
-    res
-      .status(200)
-      .send({ data: forms, Msg: "Successfully get forms by UserId" });
+    res.status(200).send({ data: forms, Msg: "Successfully get all forms" });
   } catch (error) {
-    console.log("Error updating form" + error.message);
+    console.log("Error get all forms" + error.message);
     res.status(500).send("Server error: " + error.message);
   }
 }
@@ -146,14 +139,13 @@ async function updateFormSetting(req, res) {
 //update form Status
 async function updateFormStatus(req, res) {
   try {
-    console.log(req.body);
     let userId = req.userId;
     let form = await FormService.updateFormStatus(req.body, userId);
     res
       .status(200)
-      .send({ data: form, Msg: "Successfully update form setting" });
+      .send({ data: form, Msg: "Successfully update form status" });
   } catch (error) {
-    console.log("Error updating form setting" + error.message);
+    console.log("Error update form status" + error.message);
     res.status(500).send("Server error: " + error.message);
   }
 }
@@ -164,11 +156,9 @@ async function deleteForm(req, res) {
     let userId = req.userId;
     var formId = req.params.formid;
     let form = await FormService.DeleteForm(formId);
-    res
-      .status(200)
-      .send({ data: form, Msg: "Successfully update form setting" });
+    res.status(200).send({ data: form, Msg: "Successfully delete form" });
   } catch (error) {
-    console.log("Error updating form setting" + error.message);
+    console.log("Error delete" + error.message);
     res.status(500).send("Server error: " + error.message);
   }
 }
@@ -184,7 +174,7 @@ async function getFormLink(req, res) {
     const link = `https://mercorform.vercel.app/sendresposne/${formId}&${responseId}`;
     res.status(200).send({ data: link, Msg: "Successfully get form link" });
   } catch (error) {
-    console.log("Error getting form link" + error.message);
+    console.log("Error getting unique form link" + error.message);
     res.status(500).send("Server error: " + error.message);
   }
 }
@@ -197,7 +187,6 @@ async function getFormForResponse(req, res) {
     let formId = Id.split("&")[0];
     let responseId = Id.split("&")[1];
     let email = req.body.email;
-    console.log("email: " + email);
     let FormObj = await FormService.GetFormForUserResponse(
       formId,
       responseId,
@@ -218,7 +207,7 @@ async function getFormForResponse(req, res) {
       res.status(200).send({ data: null, Msg: FormObj.Response });
     }
   } catch (error) {
-    console.log("Error updating form" + error.message);
+    console.log("Error  get form for user response" + error.message);
     res.status(500).send("Server error: " + error.message);
   }
 }
@@ -229,22 +218,12 @@ async function addFormResponse(req, res) {
     var Id = req.params.responseId;
     let responseId = Id.split("&")[1];
 
-    console.log(req.body);
-    // let fields = JSON.parse(req.body.fields);
-    // console.log('fields', fields);
-    // //for storing file
-    // if (fields.length > 0) {
-    //   fields.forEach(function (field) {
-
-    //   });
-    // }
-
     let FormObj = await FormService.submitFormResponse(req.body, responseId);
     res
       .status(200)
       .send({ data: FormObj, Msg: "Successfully submit response" });
   } catch (error) {
-    console.log("Error adding form response" + error.message);
+    console.log("Error submit response" + error.message);
     res.status(500).send("Server error: " + error.message);
   }
 }
@@ -256,9 +235,9 @@ async function GetAllResponse(req, res) {
     let reponses = await FormService.getAllFormResponses(formId);
     res
       .status(200)
-      .send({ data: reponses, Msg: "Successfully get form all response" });
+      .send({ data: reponses, Msg: "Successfully get  all response" });
   } catch (error) {
-    console.log("Error getting form link" + error.message);
+    console.log("Error get  all response" + error.message);
     res.status(500).send("Server error: " + error.message);
   }
 }
@@ -272,23 +251,26 @@ async function getAnswerById(req, res) {
       .status(200)
       .send({ data: answer, Msg: "Successfully get submit response by id" });
   } catch (error) {
-    console.log("Error getting form link" + error.message);
+    console.log("Error get submit response by id" + error.message);
     res.status(500).send("Server error: " + error.message);
   }
 }
 
 async function uploadFile(req, res) {
-  const file = req.file;
+  try {
+    const file = req.file;
 
-  // Upload image to Cloudinary
-  cloudinary.uploader.upload(file.path, (err, result) => {
-    if (err) {
-      return res.status(500).json({ error: "Failed to upload image" });
-    }
-    res.json({ imageUrl: result.secure_url });
-
-    console.log({ "{ imageUrl: result.secure_url }": result.secure_url });
-  });
+    // Upload image to Cloudinary
+    cloudinary.uploader.upload(file.path, (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: "Failed to upload image" });
+      }
+      res.json({ imageUrl: result.secure_url });
+    });
+  } catch (error) {
+    console.log("Error upload file" + error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
 }
 
 module.exports = router;
