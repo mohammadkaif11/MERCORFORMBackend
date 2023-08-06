@@ -181,7 +181,7 @@ async function getFormLink(req, res) {
     let responseId = await FormService.getFormlink(formId, userId);
 
     //unique linke for taking  reponse by user
-    const link = `http://localhost:3000/sendresposne/${formId}&${responseId}`;
+    const link = `https://mercorform.vercel.app/sendresposne/${formId}&${responseId}`;
     res.status(200).send({ data: link, Msg: "Successfully get form link" });
   } catch (error) {
     console.log("Error getting form link" + error.message);
