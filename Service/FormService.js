@@ -21,7 +21,6 @@ async function AddFormData(data, userId) {
 }
 
 async function UpdateformData(data, userId) {
-  console.log(data);
   let stringfy_formdata = JSON.stringify(data.fields);
   let formData = await FormData.findById(data.formId);
   formData.FormData = stringfy_formdata;
@@ -48,7 +47,6 @@ async function GetUserRecentsFormData(userId) {
 
 //Update form settings
 async function updateFormSetting(data) {
-  console.log(data);
   let formData = await FormData.findById(data.formId);
   if (data.allTimeAccess) {
     formData.Start_Datetime = null;
@@ -125,23 +123,22 @@ async function GetFormForUserResponse(formId, responseId, userEmail) {
     return Obj;
   }
   //single submission or multiple submission
-  // if (answer.length > 0) {
-  //   let Obj = {
-  //     form: null,
-  //     Response: "Submission have done",
-  //   };
-  //   return Obj;
-  // }
+  if (answer.length > 0) {
+    let Obj = {
+      form: null,
+      Response: "Submission have done",
+    };
+    return Obj;
+  }
   //if user is found and form is also found
+
   if (response.length > 0) {
     let form = await FormData.findById(formId);
-    console.log(form);
     //startDate And EndDateTime
     const startDateTime = new Date(form.Start_Datetime);
     const endDateTime = new Date(form.End_Datetime);
     // Get the current date and time
     const currentDate = new Date();
-    console.log(currentDate);
     const status = form.Status;
 
     if (form && form.IsActive) {
