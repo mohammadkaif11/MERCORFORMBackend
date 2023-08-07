@@ -32,14 +32,12 @@ router.get("/getformlink/:formid", VerfifyFetchUserService, getFormLink);
 router.post("/getform/:responseId", getFormForResponse);
 router.post(
   "/addformresponse/:responseId",
-  VerfifyFetchUserService,
   addFormResponse
 );
 router.get("/getallresponse/:formid", VerfifyFetchUserService, GetAllResponse);
 router.get("/getanswerbyid/:formid", VerfifyFetchUserService, getAnswerById);
 router.post(
   "/upload",
-  VerfifyFetchUserService,
   upload.single("file"),
   uploadFile
 );
