@@ -113,7 +113,7 @@ async function GetFormForUserResponse(formId, responseId, userEmail) {
     ResponseId: responseId,
     FormId: formId,
   });
-  let answer = await Answers.find({ UserEmail: userEmail });
+  let answer = await Answers.find({ UserEmail: userEmail,ResponseId:responseId });
   //If form is not found
   if (response.length == 0) {
     let Obj = {
